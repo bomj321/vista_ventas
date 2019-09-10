@@ -11,18 +11,19 @@
                 </div>
 
                 <div class="panel-body">
-                    {{ Form::open(['route' => 'ventas.store','id'=>'form_ventas', 'enctype' => 'multipart/form-data']) }}
+                    <form method="POST" enctype="multipart/form-data" id="form_ventas">
+                                           
 
                         @include('ventas.partials.form')                    
                         
-                    {{ Form::close() }}
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!--MODAL-->
+<!--MODALES-->
     <div class="modal fade" id="detallesVentas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -70,5 +71,30 @@
 </div>
 
 
-<!--MODAL-->
+ <div class="modal fade" id="realizarVentas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Mensaje de Confimación</h4>
+              </div>
+              <div class="modal-body">
+               <div class="row">
+                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <center><h4><strong>¿Desea realizar la venta?</strong></h4></center>
+                      
+                   </div>
+                   
+               </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary btn-submit-button">Si</button>
+              </div>
+            </div>
+          </div>
+</div>
+
+
+<!--MODALES-->
 @endsection

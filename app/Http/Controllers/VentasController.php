@@ -49,7 +49,74 @@ class VentasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+
+        if (!empty($request->apply_tax)) {
+            $apply_tax = $request->apply_tax;
+        }else{
+            $apply_tax = 'N';
+        }
+
+          DB::table('oe_order_headers_all')->insert([
+                         [
+                             'customer_id'            => $request->customer_id, 
+                             'site_id'                => $request->site_id, 
+                             'payment_type_code'      => $request->payment_type_code, 
+                             'invoice_nmber_paymentt' => $request->invoice_nmber_paymentt, 
+                             'apply_tax'              => $apply_tax,
+                             'currency_code'          => 'PEN',                              
+                             'ordered_date'           => date('Y-m-d'),
+
+
+                             'order_number'           => time(),
+                         ]                       
+            ]);
+
+
+
+        /**OBTAIN ID FROM LAST INSERT**/
+            $last_id = DB::getPdo()->lastInsertId();
+        /**OBTAIN ID FROM LAST INSERT**/
+
+        for ($i=0; $i <count($request->id_producto) ; $i++) { 
+
+                $producto = DB::table('inv_item')
+                    ->where('inv_item_id', $request->id_producto[$i])                    
+                    ->get();
+
+
+                DB::table('oe_order_lines_all')->insert([
+                         [
+                              'site_id'                => $request->site_id,
+                              'header_id'              => $last_id,
+                              'item_id'                => $request->id_producto[$i], 
+                              'ordered_item'           => $request->id_descripcion[$i],
+                              'ordered_quantity'       => $request->cantidad_producto[$i], 
+                              'ordered_price'          => $request->importe_producto[$i], 
+
+                              'request_date'           => date('Y-m-d'),
+                              'line_category_id'       => $producto[0]->idcategoria,
+
+                              'line_number'            => time(),
+                              'order_quantity_uom'     => $producto[0]->primary_uom_code,
+                              'tax_date'               => date('Y-m-d'),
+                              'primary_uom_code'       => $producto[0]->primary_uom_code,
+                              'primary_quantity_uom'   => $request->cantidad_producto[$i],
+                              'status_delivered'       => 'UNDELIVERED', 
+                                                             
+                         ]                       
+                ]); 
+        }
+
+
+
+        $data = [          
+            'message'      => 'Venta Realizada',
+            
+
+          ];
+
+        return response()->json($data);
     }
 
     /**

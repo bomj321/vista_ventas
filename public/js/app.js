@@ -355,13 +355,15 @@ function sumar(){
     });
 
    
+     var total_de_factura              = subtotal;
 
-   
-    var total_de_factura        = subtotal;
+     var total_de_factura_impuestos     = subtotal + (subtotal*0.18);
 
     //$("#total_linea").val(subtotal);
-    //$("#total_igv").val(igv_item);
-    $("#total_factura").val(total_de_factura);  
+    
+    $("#total_factura_sin_impuestos").val(total_de_factura); 
+    $("#total_igv").val('18%');
+    $("#total_factura_impuestos").val(total_de_factura_impuestos); 
 }
 
 
@@ -554,7 +556,12 @@ $(document).on("click",".btn-remove-producto", function(){
 
                     <td>
                     <strong>${codigo_producto}</strong>
-                    <input type='hidden' name='id_producto[]' value='${id_producto}'></input>                                
+                    <input type='hidden' name='id_producto[]' value='${id_producto}'></input>  
+                    <input type='hidden' name='codigo_producto[]' value='${codigo_producto}'></input>   
+                    <input type='hidden' name='id_descripcion[]' value='${id_descripcion}'></input> 
+                    <input type='hidden' name='cantidad_producto[]' value='${cantidad_producto}'></input> 
+                    <input type='hidden' name='importe_producto[]' value='${importe_producto}'></input> 
+                    <input type='hidden' name='subtotal_producto_number[]' value='${subtotal_producto_number}'></input>                              
                     </td>
 
 
@@ -600,6 +607,60 @@ $(document).on("click",".btn-remove-producto", function(){
 
 
  
+ $(document).on("click",".btn-submit-button", function(){
+ 
+   //e.preventDefault();
+
+      $('#realizarVentas').modal('hide');
+      var invoice_nmber_paymentt  = $('#invoice_nmber_paymentt').val();
+      
+       
+    /***INPUTS WITH INFORMATION***/
+
+     if(invoice_nmber_paymentt == ''){
+      toastr.error('Debe ingresar un numero de comprobante');
+      return false
+    }
+
+  
+
+
+var parametros = new FormData($("#form_ventas")[0]); 
+
+ 
+   $.ajax({
+            url: '/ventas/guardar',
+            type:"POST",
+            contentType:false,
+            processData:false,
+            data: parametros,
+            headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {
+                     toastr.warning('Realizando Venta Espere...');
+                     toastr.clear()
+              },
+               success:function(resp){    
+                toastr.success(resp.message, 'Venta de productos');
+               /* setTimeout(function(){
+                   location.reload(); 
+                 }, 2000);*/
+
+            },
+            error:function(){
+             toastr.error('Ha ocurrido un error, intente más tarde.', 'Disculpenos!') 
+            }
+
+      });
+     return false;
+
+
+
+
+  });
+
+
 
 
 
